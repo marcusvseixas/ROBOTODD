@@ -7,6 +7,12 @@ var NumbersToStart = 5;
 var TimeToWait = 1800;
 var MaxMartinGail = 4;
 
+var target = document.querySelector( '#value' );
+var observer = new MutationObserver( handleMutationObserver );
+var config = { childList: true, attributes: true };
+var dataAtual = new Date()  
+var dataAnterior = new Date()
+
 function StartRobot(){
     RobotRun();
 }
@@ -14,6 +20,28 @@ function StartRobot(){
 function RestartRobot(){
     StateRobot = "RESTARTING"
     RobotRun();
+}
+
+
+function handleMutationObserver( mutations ) {
+
+    console.log("valor obtido = " +GetValue("value"))
+    console.log("é PAR = " + !Odd(GetValue("value")))
+    if (!Odd(GetValue("value"))) {countEven++}
+    else{countEven =0}
+    console.log("QTD DE número Seguidos Start = " + NumbersToStart)
+    console.log("QTD de Pares Seguidos = " + countEven)
+        dataAtual =new Date() 
+    console.log( "Valor Atual = " + $('#'+"value").text() + "| Tempo anterior " +  dataAnterior+ " | " +" data atual " + dataAtual + "| Tempo calculado"+ (dataAnterior - dataAtual) );
+dataAnterior = dataAtual
+    if(countEven==NumbersToStart){
+        StateRobot = "BUYING"
+      console.log("clicando botao " + countOrder)
+        ClicaButton(countOrder)
+        countOrder++;
+        observer.disconnect();
+        setTimeout(function(){RobotRun()},TimeToWait)
+    }
 }
 
 
@@ -27,26 +55,17 @@ function RobotRun(){
         RobotRun();
         break;
       case 'WAITING_OPORTUNITY':
-        console.log("valor obtido = " +GetValue("value"))
-        console.log("é PAR = " + !Odd(GetValue("value")))
-        if (!Odd(GetValue("value"))) {countEven++}
-        else{countEven =0}
-        console.log("QTD DE número Seguidos Start = " + NumbersToStart)
-        console.log("QTD de Pares Seguidos = " + countEven)
-        if(countEven==NumbersToStart){
-            StateRobot = "BUYING"
-          console.log("clicando botao " + countOrder)
-            ClicaButton(countOrder)
-            countOrder++;
-        }
-       setTimeout(function(){RobotRun()},TimeToWait)
+
+
+        observer.observe( target, config );
+
         break;
       case 'BUYING':
         if (Odd(GetValue("value"))){
           	console.log(GetValue("value"))
             StateRobot = "STOPPING"
         }
-        else if(countOrder <= MaxMartinGail){
+        else if(countOrder <= MaxMartinGail+1){
             ClicaButton(countOrder)
             countOrder++;
         }
@@ -123,4 +142,18 @@ function ClicaButton(n){
   ClicaID("b"+n)}
 
 RobotRun()
+
+
+
+
+
+
+
+// //  mutations.forEach(function(mutation) {
+//     dataAtual =new Date() 
+//     console.log( "Valor Atual = " + $('#'+"value").text() + "| Tempo anterior " +  dataAnterior+ " | " +" data atual " + dataAtual + "| Tempo calculado"+ (dataAnterior - dataAtual) );
+// dataAnterior = dataAtual
+// //  });
+  
+//observer.observe( target, config );
 //StateRobot= "ERROR"
