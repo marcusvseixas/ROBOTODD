@@ -4,7 +4,7 @@ var countOrder = 1;
 var ValueToStartCount = "";
 var StateRobot= "STOPED";
 var NumbersToStart = 5;
-var TimeToWait = 1800;
+var TimeToWait = 2100;
 var MaxMartinGail = 4;
 
 var target = document.querySelector( '#value' );
