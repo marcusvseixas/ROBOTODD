@@ -141,6 +141,14 @@ function ClicaButton(n){
   console.log("b"+n);
   ClicaID("b"+n)}
 
+function closeTabs() {
+    var divs = document.querySelectorAll('.close.secondary-bg-color'); 
+
+    for (i = 0; i < divs.length; ++i) {
+        divs[i].click();
+    };
+}
+
 RobotRun()
 
 
