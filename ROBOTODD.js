@@ -3,9 +3,9 @@ var countEven = 0;
 var countOrder = 1;
 var ValueToStartCount = "";
 var StateRobot= "STOPED";
-var NumbersToStart = 5;
-var TimeToWait = 2100;
-var MaxMartinGail = 4;
+var NumbersToStart = 8;
+var TimeToWait = 8000;
+var MaxMartinGail = 2;
 
 var target = document.querySelector( '#value' );
 var observer = new MutationObserver( handleMutationObserver );
@@ -34,14 +34,11 @@ function handleMutationObserver( mutations ) {
         dataAtual =new Date() 
     console.log( "Valor Atual = " + $('#'+"value").text() + "| Tempo anterior " +  dataAnterior+ " | " +" data atual " + dataAtual + "| Tempo calculado"+ (dataAnterior - dataAtual) );
 dataAnterior = dataAtual
-    if(countEven==NumbersToStart){
+    if(countEven>=NumbersToStart){
         StateRobot = "BUYING"
-      console.log("clicando botao " + countOrder)
-        ClicaButton(countOrder)
-        countOrder++;
-        observer.disconnect();
-        setTimeout(function(){RobotRun()},TimeToWait)
+        console.log("clicando botao " + countOrder)
     }
+    RobotRun();
 }
 
 
@@ -61,25 +58,31 @@ function RobotRun(){
 
         break;
       case 'BUYING':
+
         if (Odd(GetValue("value"))){
-          	console.log(GetValue("value"))
-            StateRobot = "STOPPING"
+            console.log(GetValue("value"))
+            setTimeout(function(){closeTabs()},TimeToWait)
+            setTimeout(function(){RestartRobot()},6000)
+            observer.disconnect()
         }
         else if(countOrder <= MaxMartinGail+1){
             ClicaButton(countOrder)
             countOrder++;
+            StateRobot = "BUYING"
+            console.log("comprou")
         }
         else{
-            StateRobot = "STOPPING";
+            StateRobot = "ERROR";
+            observer.disconnect()
         }
-       setTimeout(function(){RobotRun()},TimeToWait)
         break;
         case 'STOPPING':
+        console.log("parando")
             countEven = 0;
             countOrder = 1;
             StateRobot= "ERROR"
             ValueToStartCount = "";
-           setTimeout(function(){RobotRun()},TimeToWait)
+           observer.disconnect()
         break;
         case 'VALIDATING':
             var CountpurchaseMartinGailButton = 0 ;
@@ -117,15 +120,15 @@ function RobotRun(){
         break 
         case 'ERROR':
              console.log('The Robot ERROR');
+             observer.disconnect()
         break
         case 'RESTARTING':
                 countEven = 0;
                 countOrder = 1;
                 StateRobot= "STOPED"
                 ValueToStartCount = "";
-                TimeToWait = 2000;
-                MaxMartinGail = 4;
                 console.log('The Robot Restarted');
+                RobotRun()
          break
     }
 }
@@ -140,6 +143,15 @@ function Odd(value){return parseInt(value)%2==0?false:true}
 function ClicaButton(n){
   console.log("b"+n);
   ClicaID("b"+n)}
+
+function closeTabs() {
+    var divs = document.querySelectorAll('.close.secondary-bg-color'); 
+
+    for (i = 0; i < divs.length; ++i) {
+        divs[i].click();
+    };
+    RobotRun()
+}
 
 RobotRun()
 
