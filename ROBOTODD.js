@@ -3,9 +3,13 @@ var countEven = 0;
 var countOrder = 1;
 var ValueToStartCount = "";
 var StateRobot= "STOPED";
-var NumbersToStart = 8;
+var NumbersToStart = 5;
 var TimeToWait = 8000;
-var MaxMartinGail = 2;
+var MaxMartinGail = 1;
+var wins = 0;
+var loses = 0;
+var secondWin = 0;
+var restart = false;
 
 var target = document.querySelector( '#value' );
 var observer = new MutationObserver( handleMutationObserver );
@@ -31,8 +35,12 @@ function handleMutationObserver( mutations ) {
     else{countEven =0}
     console.log("QTD DE número Seguidos Start = " + NumbersToStart)
     console.log("QTD de Pares Seguidos = " + countEven)
+    console.log("GANHOU " + wins)
+    console.log("GANHOU NO MG " + secondWin)
+    console.log("PERDEU " + loses)
         dataAtual =new Date() 
-    console.log( "Valor Atual = " + $('#'+"value").text() + "| Tempo anterior " +  dataAnterior+ " | " +" data atual " + dataAtual + "| Tempo calculado"+ (dataAnterior - dataAtual) );
+    console.log("Valor Atual = " + $('#'+"value").text())
+    console.log("| Tempo anterior " +  dataAnterior+ " | " +" data atual " + dataAtual + "| Tempo calculado"+ (dataAnterior - dataAtual) );
 dataAnterior = dataAtual
     if(countEven>=NumbersToStart){
         StateRobot = "BUYING"
@@ -63,6 +71,11 @@ function RobotRun(){
             console.log(GetValue("value"))
             setTimeout(function(){closeTabs()},TimeToWait)
             setTimeout(function(){RestartRobot()},6000)
+            wins++;
+            console.log("GANHOU " + wins + " " + countOrder)
+            if (countOrder > 2) {
+                secondWin++;
+            }
             observer.disconnect()
         }
         else if(countOrder <= MaxMartinGail+1){
@@ -73,6 +86,12 @@ function RobotRun(){
         }
         else{
             StateRobot = "ERROR";
+            if (restart) {
+                setTimeout(function(){closeTabs()},32000)
+                setTimeout(function(){RestartRobot()},31000)
+                loses++;
+                console.log("PERDEU " + loses)
+            }
             observer.disconnect()
         }
         break;
@@ -96,7 +115,7 @@ function RobotRun(){
             if(
                 countEven == 0 &&
                 countOrder == 1 &&
-                MaxMartinGail > 0 &&
+                MaxMartinGail >= 0 &&
                 ValueToStartCount == "" &&
                 ValidaID("b1") &&
                 CountpurchaseMartinGailButton == MaxMartinGail
